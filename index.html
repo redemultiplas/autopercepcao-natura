@@ -5,7 +5,132 @@
     <base href="/autopercepcao-natura/">
     <title>Formulário de Avaliação</title>
     <meta name="description" content="Autopercepcao-natura">
-    <link rel="stylesheet" href="css/style.css">
+     <style type="text/css">
+         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+            body {
+                font-family: 'Noto Sans', sans-serif;
+                background-color: #91bfc6;
+                color: #333;
+                line-height: 1.6;
+                padding: 10px;
+                font-size: 18px; /* Tamanho de fonte para dispositivos móveis */
+                margin: 0;
+            }
+            
+            h1 {
+                color: #444;
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+            
+            
+            h3 {
+                color: #444;
+                text-align: center;
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+            
+            #formularioAvaliacao {
+                background: #fff;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            .pergunta {
+                border: 1px solid #ddd;
+                padding: 15px;
+               
+                margin-bottom: 15px;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+            }
+            
+            .pergunta label.pergunta-text {
+                font-size: 20px; /* Tamanho de fonte maior para perguntas */
+                display: block;
+                margin-bottom: 19px;
+            }
+            
+            .opcoes {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr); /* 5 opções por linha */
+                gap: 10px;
+            }
+            
+            .opcoes label {
+                padding: 10px;
+                border-radius: 5px;
+                background: #f4f4f4;
+                text-align: center;
+                cursor: pointer;
+                font-size: 16px; /* Tamanho de fonte maior para os labels */
+            }
+            
+            .opcoes input[type="radio"] {
+                display: none; /* Oculta os botões de rádio padrão */
+            }
+            
+            .opcoes input[type="radio"]:checked + label {
+                background: #5195a5;
+                color: white;
+            }
+            
+            button {
+                background: #4c91af;
+                color: white;
+                border: none;
+                padding: 15px 30px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 30px;
+                display: block;
+                width: 100%;
+                margin-top: 20px;
+            }
+            
+            button:hover {
+                background: #4c94ac;
+            }
+            
+            #resultado {
+                margin: 20px;
+                font-size: 40px;
+                text-align: center;
+            }
+            
+            
+            
+            /* Estilos para Desktops e Telas Maiores */
+            @media screen and (min-width: 768px) {
+                body {
+                    font-size: 35px;
+                    padding: 20px;
+                }
+            
+                h1 {
+                    font-size: 40px;
+                }
+            
+                h3{
+            
+                    font-size: 25px;
+                }
+            
+                .opcoes {
+                    grid-template-columns: repeat(10, 1fr); /* 10 opções por linha */
+                }
+            
+                .pergunta label.pergunta-text {
+                    font-size: 24px;
+                }
+            }
+                     
+                     
+    <style>
 
 
 </head>
@@ -15,6 +140,68 @@
     <form id="formularioAvaliacao"></form>
     <button type="button" onclick="calcularPontuacao()">Calcular</button>
     <div class="result" id="resultado"></div>
-    <script src="js/sum.js"></script>
+    <script>
+        const perguntas = [
+            "Quão importante é para mim ser uma pessoa inclusiva?",
+            "Qual o nível consciência tenho de meus estereótipos e vieses?",
+            "Quão diverso avalio meu time direto?",
+            "Me sinto a vontade para gerenciar o tema de diversidade na relação com meu time?",
+            "Reconheço e celebro as diferentes contribuições e conquistas de pessoas diversas do meu time?",
+            "Incentivo a participação e a contribuição de toda equipe durante reuniões e discussões?",
+            "Quanto reconheço que tenho que me desenvolver e evoluir quanto a temática de inclusão?",
+            "Quanto tenho buscado conhecimento em meu dia a dia, para ser um líder inclusivo?"
+        ];
+        
+        function gerarFormulario() {
+            const form = document.getElementById('formularioAvaliacao');
+            perguntas.forEach((pergunta, index) => {
+                const divPergunta = document.createElement('div');
+                divPergunta.className = 'pergunta';
+        
+                const labelPergunta = document.createElement('label');
+                labelPergunta.className = 'pergunta-text';
+                labelPergunta.textContent = `Pergunta ${index + 1}: ${pergunta}`;
+                divPergunta.appendChild(labelPergunta);
+        
+                const divOpcoes = document.createElement('div');
+                divOpcoes.className = 'opcoes';
+        
+                for (let i = 1; i <= 10; i++) {
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.id = `pergunta${index + 1}-${i}`;
+                    input.name = `pergunta${index + 1}`;
+                    input.value = i;
+        
+                    const label = document.createElement('label');
+                    label.htmlFor = input.id;
+                    label.textContent = i;
+        
+                    divOpcoes.appendChild(input);
+                    divOpcoes.appendChild(label);
+                }
+        
+                divPergunta.appendChild(divOpcoes);
+                form.appendChild(divPergunta);
+            });
+        }
+        
+        function calcularPontuacao() {
+            let soma = 0;
+            for (let i = 1; i <= perguntas.length; i++) {
+                const opcoes = document.getElementsByName(`pergunta${i}`);
+                for (const opcao of opcoes) {
+                    if (opcao.checked) {
+                        soma += parseInt(opcao.value);
+                        break;
+                    }
+                }
+            }
+            document.getElementById('resultado').innerText = 'Seu somatório é: ' + soma;
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+        
+        window.onload = gerarFormulario;
+    </script>
 </body>
 </html>
